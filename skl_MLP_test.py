@@ -9,7 +9,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.neural_network._base import ACTIVATIONS, DERIVATIVES
 
 
-rng = np.random.RandomState()
+np.random.seed(0)
 
 def _initialize(self, *args, **kwargs):
     self._old_initialize(*args, **kwargs)
@@ -17,10 +17,8 @@ def _initialize(self, *args, **kwargs):
 
 
 # Standard MLPRegressor models
-model1 = MLPRegressor(hidden_layer_sizes=(1), solver='lbfgs',
-                      random_state=rng)
-model2 = MLPRegressor(hidden_layer_sizes=(1), solver='lbfgs',
-                      random_state=rng)
+model1 = MLPRegressor(hidden_layer_sizes=(1), solver='lbfgs')
+model2 = MLPRegressor(hidden_layer_sizes=(1), solver='lbfgs')
 
 # Modification to specify the output layer
 # activation function.
@@ -31,8 +29,8 @@ model2._initialize = _initialize.__get__(model2)
 f = lambda x: np.tanh(x*4)
 
 # Training data (noisy)
-X = 4*rng.random(size=100) - 2
-y = f(X) + rng.randn(100)*0.1
+X = 4*np.random.random(size=100) - 2
+y = f(X) + np.random.randn(100)*0.1
 
 # Test data
 X_test = np.linspace(-2, 2, 11)
@@ -42,7 +40,7 @@ model1.fit(X.reshape(-1, 1), y, )
 print(f"Model 1 score: {model1.score(X_test.reshape(-1, 1), y_test)}")
 
 model2.fit(X.reshape(-1, 1), y)
-#print(f"Model 2 score: {model2.score(X_test.reshape(-1, 1), y_test)}")
+print(f"Model 2 score: {model2.score(X_test.reshape(-1, 1), y_test)}")
 
 X_pred = np.linspace(-2, 2, 101)
 y_pred1 = model1.predict(X_pred.reshape(-1, 1))
